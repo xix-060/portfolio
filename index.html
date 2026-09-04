@@ -47,7 +47,7 @@
 
   /* === Layout === */
   .wrap {
-    max-width: 1120px;
+    max-width: 1080px;
     margin: 0 auto;
     padding: 0 56px;
   }
@@ -56,16 +56,16 @@
   .top {
     display: flex;
     justify-content: space-between;
-    align-items: baseline;
-    padding: 28px 56px;
+    align-items: center;
+    padding: 22px 56px;
     border-bottom: 1px solid var(--border-soft);
   }
 
   .top-logo {
     font-family: "Source Serif 4", "LXGW WenKai", serif;
-    font-size: 17px;
+    font-size: 15px;
     font-weight: 600;
-    letter-spacing: -0.01em;
+    letter-spacing: -0.005em;
   }
 
   .top-logo span {
@@ -73,27 +73,39 @@
     font-weight: 400;
     font-style: italic;
     margin-left: 6px;
+    font-family: "Source Serif 4", serif;
+    font-size: 14px;
   }
 
   .top-nav {
     display: flex;
-    gap: 36px;
+    gap: 28px;
+    align-items: center;
   }
 
   .top-nav a {
     color: var(--text-soft);
     text-decoration: none;
-    font-size: 14px;
+    font-size: 13.5px;
     font-weight: 500;
     font-family: "Inter", -apple-system, "PingFang SC", sans-serif;
     transition: color 0.2s;
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
   }
 
-  .top-nav a:hover { color: var(--text); }
+  .top-nav a:hover { color: var(--accent); }
+
+  .top-nav a.text-link {
+    color: var(--text);
+    border-bottom: 1px solid var(--text);
+    padding-bottom: 1px;
+  }
 
   /* === Hero === */
   .hero {
-    padding: 112px 0 88px;
+    padding: 48px 0 44px;
     border-bottom: 1px solid var(--border-soft);
   }
 
@@ -103,7 +115,7 @@
     letter-spacing: 0.18em;
     text-transform: uppercase;
     color: var(--accent);
-    margin-bottom: 28px;
+    margin-bottom: 12px;
     display: flex;
     align-items: center;
     gap: 12px;
@@ -118,28 +130,48 @@
 
   .hero h1 {
     font-family: "Source Serif 4", "LXGW WenKai", "Noto Serif SC", serif;
-    font-size: clamp(56px, 9vw, 112px);
+    font-size: clamp(30px, 3.6vw, 42px);
     font-weight: 500;
-    line-height: 1.0;
-    letter-spacing: -0.04em;
-    margin-bottom: 32px;
+    line-height: 1.15;
+    letter-spacing: -0.02em;
+    margin-bottom: 10px;
     color: var(--text);
+    display: flex;
+    align-items: baseline;
+    gap: 14px;
+    flex-wrap: wrap;
   }
 
-  .hero h1 em {
+  .hero h1 .pinyin {
     font-style: italic;
     font-weight: 400;
-    color: var(--text-soft);
+    font-size: 0.5em;
+    color: var(--text-faint);
+    letter-spacing: 0.02em;
+    margin-top: 0;
   }
 
-  .hero-tag {
+  .hero-role {
     font-family: "Source Serif 4", "LXGW WenKai", serif;
-    font-size: clamp(20px, 2.2vw, 26px);
+    font-size: clamp(17px, 1.6vw, 20px);
     font-weight: 400;
     line-height: 1.5;
     color: var(--text-soft);
-    max-width: 760px;
-    margin-bottom: 56px;
+    margin-bottom: 14px;
+  }
+
+  .hero-role em {
+    font-style: normal;
+    color: var(--text);
+    font-weight: 500;
+  }
+
+  .hero-tag {
+    font-size: 15.5px;
+    line-height: 1.7;
+    color: var(--text-soft);
+    max-width: 640px;
+    margin-bottom: 26px;
   }
 
   .hero-tag em {
@@ -147,46 +179,77 @@
     color: var(--text);
   }
 
+  .hero-actions {
+    display: flex;
+    gap: 16px;
+    flex-wrap: wrap;
+    align-items: center;
+  }
+
+  .btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    padding: 12px 20px;
+    text-decoration: none;
+    font-size: 14px;
+    font-weight: 500;
+    font-family: "Inter", -apple-system, "PingFang SC", sans-serif;
+    transition: all 0.2s;
+  }
+
+  .btn-primary {
+    background: var(--text);
+    color: var(--bg);
+  }
+
+  .btn-primary:hover {
+    background: var(--accent);
+  }
+
+  .btn-secondary {
+    background: transparent;
+    color: var(--text);
+    border: 1px solid var(--text);
+  }
+
+  .btn-secondary:hover {
+    background: var(--text);
+    color: var(--bg);
+  }
+
   .hero-meta {
-    display: grid;
-    grid-template-columns: repeat(4, 1fr);
-    gap: 32px;
-    padding-top: 32px;
-    border-top: 1px solid var(--border);
+    display: flex;
+    gap: 28px;
+    margin-top: 28px;
+    padding-top: 18px;
+    border-top: 1px solid var(--border-soft);
+    flex-wrap: wrap;
   }
 
   .meta-item {
     display: flex;
-    flex-direction: column;
-    gap: 6px;
+    align-items: baseline;
+    gap: 8px;
+    font-size: 13.5px;
   }
 
   .meta-label {
     font-family: "JetBrains Mono", ui-monospace, monospace;
     font-size: 10.5px;
-    letter-spacing: 0.15em;
+    letter-spacing: 0.12em;
     text-transform: uppercase;
     color: var(--text-faint);
   }
 
   .meta-value {
-    font-size: 15px;
     color: var(--text);
     font-weight: 500;
   }
 
-  .meta-value a {
-    color: var(--text);
-    text-decoration: none;
-    border-bottom: 1px solid var(--border);
-    transition: border-color 0.2s;
-  }
-
-  .meta-value a:hover { border-color: var(--text); }
-
   /* === Section === */
   .section {
-    padding: 96px 0;
+    padding: 88px 0;
     border-bottom: 1px solid var(--border-soft);
   }
 
@@ -194,10 +257,10 @@
 
   .sec-head {
     display: grid;
-    grid-template-columns: 180px 1fr;
-    gap: 56px;
+    grid-template-columns: 160px 1fr;
+    gap: 48px;
     align-items: start;
-    margin-bottom: 64px;
+    margin-bottom: 56px;
   }
 
   .sec-label {
@@ -206,16 +269,16 @@
     letter-spacing: 0.18em;
     text-transform: uppercase;
     color: var(--accent);
-    padding-top: 12px;
+    padding-top: 10px;
   }
 
   .sec-title {
     font-family: "Source Serif 4", "LXGW WenKai", "Noto Serif SC", serif;
-    font-size: clamp(28px, 3.2vw, 40px);
+    font-size: clamp(26px, 2.8vw, 34px);
     font-weight: 500;
-    letter-spacing: -0.025em;
-    line-height: 1.25;
-    max-width: 720px;
+    letter-spacing: -0.02em;
+    line-height: 1.3;
+    max-width: 680px;
   }
 
   .sec-title em {
@@ -227,9 +290,9 @@
   /* === Projects === */
   .project {
     display: grid;
-    grid-template-columns: 100px 1fr 220px;
-    gap: 48px;
-    padding: 40px 0;
+    grid-template-columns: 90px 1fr;
+    gap: 40px;
+    padding: 36px 0;
     border-top: 1px solid var(--border);
     transition: background 0.25s;
   }
@@ -237,7 +300,7 @@
   .project:first-of-type { border-top: 1px solid var(--text); }
 
   .project:hover {
-    background: linear-gradient(to right, rgba(31, 74, 58, 0.02), transparent 60%);
+    background: linear-gradient(to right, rgba(31, 74, 58, 0.025), transparent 70%);
   }
 
   .proj-num {
@@ -245,32 +308,46 @@
     font-size: 13px;
     color: var(--text-faint);
     letter-spacing: 0.05em;
-    padding-top: 8px;
+    padding-top: 6px;
   }
 
-  .proj-body { max-width: 640px; }
+  .proj-body { max-width: 720px; }
 
   .proj-title {
     font-family: "Source Serif 4", "LXGW WenKai", serif;
-    font-size: 28px;
+    font-size: 26px;
     font-weight: 600;
-    letter-spacing: -0.02em;
-    margin-bottom: 6px;
-    line-height: 1.2;
+    letter-spacing: -0.018em;
+    margin-bottom: 4px;
+    line-height: 1.25;
   }
 
   .proj-title a {
     color: var(--text);
     text-decoration: none;
-    background-image: linear-gradient(to right, var(--accent) 0%, var(--accent) 100%);
-    background-size: 0 1px;
-    background-repeat: no-repeat;
-    background-position: 0 100%;
-    transition: background-size 0.3s, color 0.2s;
+    border-bottom: 1px solid var(--text);
+    padding-bottom: 2px;
+    display: inline;
+    transition: color 0.2s, border-color 0.2s;
   }
 
   .proj-title a:hover {
-    background-size: 100% 1px;
+    color: var(--accent);
+    border-color: var(--accent);
+  }
+
+  .proj-title .arrow {
+    display: inline-block;
+    margin-left: 6px;
+    font-family: "Inter", sans-serif;
+    font-size: 0.7em;
+    color: var(--text-soft);
+    transition: transform 0.2s, color 0.2s;
+    font-weight: 400;
+  }
+
+  .proj-title a:hover .arrow {
+    transform: translate(3px, -3px);
     color: var(--accent);
   }
 
@@ -278,76 +355,75 @@
     font-family: "JetBrains Mono", ui-monospace, monospace;
     font-size: 12px;
     color: var(--text-faint);
-    letter-spacing: 0.06em;
-    margin-bottom: 18px;
+    letter-spacing: 0.05em;
+    margin-bottom: 16px;
   }
 
   .proj-desc {
-    font-size: 16.5px;
+    font-size: 16px;
     line-height: 1.7;
     color: var(--text-soft);
-    margin-bottom: 14px;
+    margin-bottom: 12px;
   }
 
   .proj-highlight {
     font-family: "Source Serif 4", "LXGW WenKai", serif;
-    font-size: 15.5px;
+    font-size: 15px;
     font-style: italic;
     color: var(--accent);
     padding-left: 14px;
     border-left: 2px solid var(--accent);
-    margin-bottom: 20px;
+    margin-bottom: 18px;
   }
 
   .proj-tags {
     display: flex;
-    gap: 8px;
+    gap: 6px;
     flex-wrap: wrap;
   }
 
   .proj-tag {
     font-family: "JetBrains Mono", ui-monospace, monospace;
-    font-size: 11.5px;
+    font-size: 11px;
     color: var(--text-soft);
-    padding: 4px 10px;
+    padding: 3px 9px;
     background: transparent;
     border: 1px solid var(--border);
-    transition: border-color 0.2s, color 0.2s;
   }
 
-  .proj-tag:hover { border-color: var(--text); color: var(--text); }
-
-  .proj-aside {
-    padding-top: 8px;
-    text-align: right;
+  .proj-demo {
+    margin-top: 22px;
+    width: 100%;
+    max-width: 720px;
+    border: 1px solid var(--border);
+    background: var(--bg-soft);
+    display: block;
   }
 
-  .proj-year {
+  .proj-demo img {
+    display: block;
+    width: 100%;
+    height: auto;
+  }
+
+  .proj-demo-cap {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 9px 14px;
+    border-top: 1px solid var(--border);
     font-family: "JetBrains Mono", ui-monospace, monospace;
-    font-size: 11px;
+    font-size: 10.5px;
+    letter-spacing: 0.06em;
     color: var(--text-faint);
-    letter-spacing: 0.1em;
-    margin-bottom: 8px;
+    text-transform: uppercase;
   }
-
-  .proj-link {
-    display: inline-block;
-    color: var(--text);
-    text-decoration: none;
-    font-size: 13.5px;
-    font-weight: 500;
-    border-bottom: 1px solid var(--text);
-    padding-bottom: 1px;
-    transition: opacity 0.2s;
-  }
-
-  .proj-link:hover { opacity: 0.6; }
 
   /* === Skills === */
   .skills-grid {
     display: grid;
     grid-template-columns: repeat(2, 1fr);
-    gap: 56px 80px;
+    gap: 48px 72px;
   }
 
   .skill-cat { display: flex; flex-direction: column; }
@@ -356,14 +432,14 @@
     display: flex;
     align-items: baseline;
     justify-content: space-between;
-    padding-bottom: 12px;
-    margin-bottom: 20px;
+    padding-bottom: 10px;
+    margin-bottom: 18px;
     border-bottom: 1px solid var(--text);
   }
 
   .skill-cat-title {
     font-family: "Source Serif 4", "LXGW WenKai", serif;
-    font-size: 20px;
+    font-size: 19px;
     font-weight: 600;
     letter-spacing: -0.01em;
   }
@@ -378,26 +454,26 @@
   .skill-list {
     display: flex;
     flex-direction: column;
-    gap: 10px;
+    gap: 9px;
   }
 
   .skill-item {
-    font-size: 15.5px;
+    font-size: 15px;
     color: var(--text-soft);
     display: flex;
     align-items: baseline;
-    gap: 12px;
+    gap: 10px;
   }
 
   .skill-item::before {
     content: "—";
     color: var(--text-faint);
-    font-size: 13px;
+    font-size: 12px;
   }
 
   /* === Contact === */
   .contact {
-    padding: 120px 0 88px;
+    padding: 96px 0 72px;
   }
 
   .contact-eyebrow {
@@ -406,7 +482,7 @@
     letter-spacing: 0.18em;
     text-transform: uppercase;
     color: var(--accent);
-    margin-bottom: 24px;
+    margin-bottom: 20px;
     display: flex;
     align-items: center;
     gap: 12px;
@@ -421,120 +497,133 @@
 
   .contact h2 {
     font-family: "Source Serif 4", "LXGW WenKai", "Noto Serif SC", serif;
-    font-size: clamp(40px, 5.5vw, 72px);
+    font-size: clamp(32px, 4vw, 48px);
     font-weight: 500;
-    line-height: 1.1;
-    letter-spacing: -0.035em;
-    margin-bottom: 32px;
-    max-width: 900px;
-  }
-
-  .contact h2 em {
-    font-style: italic;
-    font-weight: 400;
-    color: var(--text-soft);
+    line-height: 1.2;
+    letter-spacing: -0.025em;
+    margin-bottom: 24px;
+    max-width: 760px;
   }
 
   .contact-text {
-    font-size: 18px;
-    line-height: 1.7;
+    font-size: 16.5px;
+    line-height: 1.75;
     color: var(--text-soft);
-    max-width: 600px;
-    margin-bottom: 48px;
+    max-width: 580px;
+    margin-bottom: 40px;
   }
 
   .contact-links {
     display: flex;
     flex-direction: column;
-    gap: 0;
   }
 
   .contact-link {
     display: flex;
-    align-items: baseline;
+    align-items: center;
     justify-content: space-between;
-    padding: 22px 0;
+    padding: 20px 16px;
+    margin: 0 -16px;
     border-top: 1px solid var(--border);
     text-decoration: none;
     color: var(--text);
-    transition: padding 0.25s, color 0.2s, background 0.25s;
+    transition: background 0.2s, padding 0.2s;
   }
 
   .contact-link:last-child { border-bottom: 1px solid var(--border); }
 
   .contact-link:hover {
-    padding-left: 12px;
-    color: var(--accent);
-    background: linear-gradient(to right, rgba(31, 74, 58, 0.03), transparent);
+    background: var(--bg-soft);
   }
 
   .contact-link-left {
     display: flex;
-    align-items: baseline;
-    gap: 20px;
+    align-items: center;
+    gap: 18px;
   }
 
-  .contact-link-num {
-    font-family: "JetBrains Mono", ui-monospace, monospace;
-    font-size: 11px;
-    color: var(--text-faint);
-    letter-spacing: 0.1em;
-    min-width: 28px;
+  .contact-link-icon {
+    width: 36px;
+    height: 36px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border: 1px solid var(--border);
+    color: var(--text-soft);
+    transition: all 0.2s;
   }
+
+  .contact-link:hover .contact-link-icon {
+    border-color: var(--accent);
+    color: var(--accent);
+  }
+
+  .contact-link-icon svg {
+    width: 16px;
+    height: 16px;
+  }
+
+  .contact-link-text { display: flex; flex-direction: column; gap: 2px; }
 
   .contact-link-label {
     font-family: "Source Serif 4", "LXGW WenKai", serif;
-    font-size: 22px;
-    font-weight: 500;
+    font-size: 19px;
+    font-weight: 600;
     letter-spacing: -0.01em;
+  }
+
+  .contact-link-sub {
+    font-family: "JetBrains Mono", ui-monospace, monospace;
+    font-size: 11.5px;
+    color: var(--text-faint);
+    letter-spacing: 0.04em;
   }
 
   .contact-link-arrow {
     font-family: "JetBrains Mono", ui-monospace, monospace;
-    font-size: 14px;
+    font-size: 16px;
     color: var(--text-faint);
-    transition: transform 0.25s, color 0.2s;
+    transition: transform 0.2s, color 0.2s;
   }
 
   .contact-link:hover .contact-link-arrow {
-    transform: translateX(6px);
+    transform: translateX(4px);
     color: var(--accent);
   }
 
   /* === Footer === */
   footer {
-    padding: 32px 56px;
+    padding: 28px 56px;
     display: flex;
     justify-content: space-between;
     align-items: center;
     font-size: 12px;
     color: var(--text-faint);
     font-family: "JetBrains Mono", ui-monospace, monospace;
-    letter-spacing: 0.05em;
+    letter-spacing: 0.04em;
     border-top: 1px solid var(--border-soft);
   }
 
   /* === Responsive === */
   @media (max-width: 900px) {
     .wrap { padding: 0 32px; }
-    .top { padding: 24px 32px; }
-    footer { padding: 28px 32px; }
-    .sec-head { grid-template-columns: 1fr; gap: 16px; margin-bottom: 40px; }
-    .project { grid-template-columns: 1fr; gap: 16px; }
-    .proj-aside { text-align: left; padding-top: 0; }
+    .top { padding: 20px 32px; }
+    footer { padding: 24px 32px; }
+    .sec-head { grid-template-columns: 1fr; gap: 14px; margin-bottom: 40px; }
+    .project { grid-template-columns: 1fr; gap: 12px; }
     .skills-grid { grid-template-columns: 1fr; gap: 40px; }
-    .hero-meta { grid-template-columns: repeat(2, 1fr); }
   }
 
   @media (max-width: 560px) {
     .wrap { padding: 0 20px; }
-    .top { padding: 20px 20px; flex-direction: column; gap: 12px; align-items: flex-start; }
-    .top-nav { gap: 24px; }
-    footer { padding: 24px 20px; flex-direction: column; gap: 8px; align-items: flex-start; }
-    .hero { padding: 64px 0 56px; }
-    .section { padding: 64px 0; }
-    .contact { padding: 72px 0 56px; }
-    .contact-link-label { font-size: 18px; }
+    .top { padding: 18px 20px; }
+    .top-nav { gap: 18px; }
+    footer { padding: 22px 20px; flex-direction: column; gap: 6px; align-items: flex-start; }
+    .hero { padding: 40px 0 36px; }
+    .section { padding: 56px 0; }
+    .contact { padding: 64px 0 48px; }
+    .hero-actions { flex-direction: column; align-items: stretch; }
+    .btn { justify-content: center; }
   }
 </style>
 </head>
@@ -545,7 +634,7 @@
   <div class="top-nav">
     <a href="#projects">项目</a>
     <a href="#skills">技能</a>
-    <a href="#contact">联系</a>
+    <a class="text-link" href="mailto:msxiii_356@163.com">联系我</a>
   </div>
 </nav>
 
@@ -553,25 +642,29 @@
 
   <!-- HERO -->
   <header class="hero">
-    <div class="eyebrow">Portfolio · 2026</div>
-    <h1>构建能<em>真正回答</em><br>复杂问题的 AI 系统。</h1>
-    <p class="hero-tag">牟圣熹，大模型应用开发方向。围绕 <em>RAG、Agent、知识图谱、多模态检索</em> 做工程化实践，把论文里的方法变成能跑起来的产品。</p>
+    <div class="eyebrow">PORTFOLIO · 2027 届</div>
+    <h1>
+      牟圣熹
+      <span class="pinyin">Mou Shengxi</span>
+    </h1>
+    <p class="hero-role">大模型应用开发方向 · <em>数据科学专业</em> · 西安财经大学</p>
+    <p class="hero-tag">围绕 RAG、Agent、知识图谱与多模态检索做工程化实践，把论文里的方法变成能跑起来的产品。目前在看 2027 届相关岗位。</p>
+    <div class="hero-actions">
+      <a class="btn btn-primary" href="#projects">查看项目 →</a>
+      <a class="btn btn-secondary" href="mailto:msxiii_356@163.com">发送邮件</a>
+    </div>
     <div class="hero-meta">
       <div class="meta-item">
         <span class="meta-label">学校</span>
         <span class="meta-value">西安财经大学</span>
       </div>
       <div class="meta-item">
-        <span class="meta-label">专业</span>
-        <span class="meta-value">数据科学</span>
-      </div>
-      <div class="meta-item">
         <span class="meta-label">方向</span>
         <span class="meta-value">大模型应用开发</span>
       </div>
       <div class="meta-item">
-        <span class="meta-label">状态</span>
-        <span class="meta-value"><a href="#contact">2027应届生 · 开放机会</a></span>
+        <span class="meta-label">GitHub</span>
+        <span class="meta-value"><a href="https://github.com/xix-060" style="color:inherit;text-decoration:none;border-bottom:1px solid var(--text);">@xix-060</a></span>
       </div>
     </div>
   </header>
@@ -586,7 +679,9 @@
     <div class="project">
       <div class="proj-num">/ 01</div>
       <div class="proj-body">
-        <h3 class="proj-title"><a href="https://github.com/xix-060/AI-Agent-learning_mim/tree/main/scholar_knowledge">ScholarGraph</a></h3>
+        <h3 class="proj-title">
+          <a href="https://github.com/xix-060/AI-Agent-learning_mim/tree/main/scholar_knowledge">ScholarGraph<span class="arrow">↗</span></a>
+        </h3>
         <div class="proj-sub">Academic Knowledge Graph QA</div>
         <p class="proj-desc">用知识图谱的多跳推理，回答纯向量 RAG 答不了的跨文档关系问题——比如"某论文的作者还发表过什么"。向量检索负责"召回相似"，图谱一跳负责"召回相关"。</p>
         <p class="proj-highlight">向量 + 图谱混合检索 · 自建 100 条评测集，命中率 62% → 85%+</p>
@@ -596,17 +691,19 @@
           <span class="proj-tag">ChromaDB</span>
           <span class="proj-tag">Streamlit</span>
         </div>
-      </div>
-      <div class="proj-aside">
-        <div class="proj-year">2026</div>
-        <a class="proj-link" href="https://github.com/xix-060/AI-Agent-learning_mim/tree/main/scholar_knowledge">查看 →</a>
+        <div class="proj-demo">
+          <img src="assets/scholar_knowledge.gif" alt="ScholarGraph 演示">
+          <div class="proj-demo-cap"><span>Demo · 学术知识图谱 GraphRAG</span></div>
+        </div>
       </div>
     </div>
 
     <div class="project">
       <div class="proj-num">/ 02</div>
       <div class="proj-body">
-        <h3 class="proj-title"><a href="https://github.com/xix-060/AI-Agent-learning_mim/tree/main/knowledge_agent">Knowledge Agent</a></h3>
+        <h3 class="proj-title">
+          <a href="https://github.com/xix-060/AI-Agent-learning_mim/tree/main/knowledge_agent">Knowledge Agent<span class="arrow">↗</span></a>
+        </h3>
         <div class="proj-sub">RAG-Powered Multi-turn Agent</div>
         <p class="proj-desc">LangGraph 状态机驱动的多轮问答 Agent，带会话记忆、工具调用与人工确认节点。覆盖 RAG 全链路：分块实验 → 检索 → 重排 → RAGAS 评估，最后用 FastAPI 暴露成可调用的服务。</p>
         <p class="proj-highlight">完整产品化链路 · 分块策略 + 重排模型都对最终召回有显著影响</p>
@@ -616,17 +713,19 @@
           <span class="proj-tag">FastAPI</span>
           <span class="proj-tag">RAGAS</span>
         </div>
-      </div>
-      <div class="proj-aside">
-        <div class="proj-year">2026</div>
-        <a class="proj-link" href="https://github.com/xix-060/AI-Agent-learning_mim/tree/main/knowledge_agent">查看 →</a>
+        <div class="proj-demo">
+          <img src="assets/knowledge_agent.gif" alt="Knowledge Agent 演示">
+          <div class="proj-demo-cap"><span>Demo · 个人知识库 Agent</span></div>
+        </div>
       </div>
     </div>
 
     <div class="project">
       <div class="proj-num">/ 03</div>
       <div class="proj-body">
-        <h3 class="proj-title"><a href="https://github.com/xix-060/AI-Agent-learning_mim/tree/main/paper_vision_agent">Paper Vision Agent</a></h3>
+        <h3 class="proj-title">
+          <a href="https://github.com/xix-060/AI-Agent-learning_mim/tree/main/paper_vision_agent">Paper Vision Agent<span class="arrow">↗</span></a>
+        </h3>
         <div class="proj-sub">Multimodal Figure QA over Knowledge Graph</div>
         <p class="proj-desc">视觉大模型结构化解析论文图表，联动知识图谱做答案佐证，支持多轮追问。覆盖论文里"看图说话"这一类纯文本 RAG 完全无能为力的场景。</p>
         <p class="proj-highlight">GLM-4V 图文解析 · 答案回链到图谱节点</p>
@@ -635,10 +734,10 @@
           <span class="proj-tag">多模态</span>
           <span class="proj-tag">GraphRAG</span>
         </div>
-      </div>
-      <div class="proj-aside">
-        <div class="proj-year">2026</div>
-        <a class="proj-link" href="https://github.com/xix-060/AI-Agent-learning_mim/tree/main/paper_vision_agent">查看 →</a>
+        <div class="proj-demo">
+          <img src="assets/paper_vision_agent.gif" alt="Paper Vision Agent 演示">
+          <div class="proj-demo-cap"><span>Demo · 论文图表多模态问答</span></div>
+        </div>
       </div>
     </div>
   </section>
@@ -709,29 +808,56 @@
   <section class="contact" id="contact">
     <div class="contact-eyebrow">03 — 联系</div>
     <h2>欢迎交流 AI 应用<br>工程化，或聊点别的。</h2>
-    <p class="contact-text">目前在看大模型应用开发岗位，RAG / Agent / 知识图谱方向都行。也可以一起聊开源、技术选型，或者随便聊聊。</p>
+    <p class="contact-text">目前在看 2027 届的大模型应用开发岗位，RAG / Agent / 知识图谱方向都行。也可以一起聊开源、技术选型，或者随便聊聊。</p>
     <div class="contact-links">
+
       <a class="contact-link" href="https://github.com/xix-060">
         <div class="contact-link-left">
-          <span class="contact-link-num">/ 01</span>
-          <span class="contact-link-label">GitHub</span>
+          <div class="contact-link-icon">
+            <svg viewBox="0 0 16 16" fill="currentColor" aria-hidden="true">
+              <path d="M8 0C3.58 0 0 3.58 0 8c0 3.54 2.29 6.53 5.47 7.59.4.07.55-.17.55-.38 0-.19-.01-.82-.01-1.49-2.01.37-2.53-.49-2.69-.94-.09-.23-.48-.94-.82-1.13-.28-.15-.68-.52-.01-.53.63-.01 1.08.58 1.23.82.72 1.21 1.87.87 2.33.66.07-.52.28-.87.51-1.07-1.78-.2-3.64-.89-3.64-3.95 0-.87.31-1.59.82-2.15-.08-.2-.36-1.02.08-2.12 0 0 .67-.21 2.2.82.64-.18 1.32-.27 2-.27.68 0 1.36.09 2 .27 1.53-1.04 2.2-.82 2.2-.82.44 1.1.16 1.92.08 2.12.51.56.82 1.27.82 2.15 0 3.07-1.87 3.75-3.65 3.95.29.25.54.73.54 1.48 0 1.07-.01 1.93-.01 2.2 0 .21.15.46.55.38A8.013 8.013 0 0 0 16 8c0-4.42-3.58-8-8-8z"/>
+            </svg>
+          </div>
+          <div class="contact-link-text">
+            <div class="contact-link-label">GitHub</div>
+            <div class="contact-link-sub">github.com/xix-060</div>
+          </div>
         </div>
-        <span class="contact-link-arrow">→ github.com/xix-060</span>
+        <span class="contact-link-arrow">→</span>
       </a>
+
       <a class="contact-link" href="mailto:msxiii_356@163.com">
         <div class="contact-link-left">
-          <span class="contact-link-num">/ 02</span>
-          <span class="contact-link-label">邮箱</span>
+          <div class="contact-link-icon">
+            <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.4" aria-hidden="true">
+              <rect x="1.5" y="3" width="13" height="10"/>
+              <path d="M1.5 3.5 L8 8.5 L14.5 3.5"/>
+            </svg>
+          </div>
+          <div class="contact-link-text">
+            <div class="contact-link-label">邮箱</div>
+            <div class="contact-link-sub">msxiii_356@163.com</div>
+          </div>
         </div>
-        <span class="contact-link-arrow">→ msxiii_356@163.com</span>
+        <span class="contact-link-arrow">→</span>
       </a>
+
       <a class="contact-link" href="https://xix-060.github.io/portfolio">
         <div class="contact-link-left">
-          <span class="contact-link-num">/ 03</span>
-          <span class="contact-link-label">作品集</span>
+          <div class="contact-link-icon">
+            <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.4" aria-hidden="true">
+              <circle cx="8" cy="8" r="6.5"/>
+              <path d="M1.5 8 H14.5 M8 1.5 C10 4 10 12 8 14.5 M8 1.5 C6 4 6 12 8 14.5"/>
+            </svg>
+          </div>
+          <div class="contact-link-text">
+            <div class="contact-link-label">作品集</div>
+            <div class="contact-link-sub">xix-060.github.io/portfolio</div>
+          </div>
         </div>
-        <span class="contact-link-arrow">→ xix-060.github.io/portfolio</span>
+        <span class="contact-link-arrow">→</span>
       </a>
+
     </div>
   </section>
 
@@ -739,7 +865,7 @@
 
 <footer>
   <div>© 2026 Mou Shengxi</div>
-  <div>Built with care</div>
+  <div>Designed in Xi'an · Built with care</div>
 </footer>
 
 </body>
