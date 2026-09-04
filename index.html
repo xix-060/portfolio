@@ -4,89 +4,743 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>牟圣熹 · 大模型应用开发</title>
+<meta name="description" content="牟圣熹 · 西安财经大学数据科学专业 · 大模型应用开发方向 · ScholarGraph / Knowledge Agent / Paper Vision Agent 作者">
+
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Source+Serif+4:opsz,wght@8..60,300;8..60,400;8..60,500;8..60,600;8..60,700&family=Inter:wght@300;400;500;600&family=JetBrains+Mono:wght@400;500&family=Noto+Serif+SC:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/lxgw-wenkai-webfont@1.7.0/style.css">
+
 <style>
+  :root {
+    --bg: #faf8f3;
+    --bg-soft: #f4f1ea;
+    --text: #1a1a1a;
+    --text-soft: #5a5a5a;
+    --text-faint: #9a968d;
+    --accent: #1f4a3a;
+    --accent-soft: #e8efe9;
+    --warm: #b87333;
+    --border: #e3ddd0;
+    --border-soft: #ece7da;
+  }
+
   * { margin: 0; padding: 0; box-sizing: border-box; }
-  body { font-family: -apple-system, "PingFang SC", "Microsoft YaHei", sans-serif;
-         background: #f6f8fa;
-         background-image: radial-gradient(circle at 20% 0%, #e8f1ff 0%, transparent 45%),
-                           radial-gradient(circle at 90% 10%, #fff5f0 0%, transparent 40%);
-         color: #1f2328; line-height: 1.75; min-height: 100vh; }
-  .container { max-width: 880px; margin: 0 auto; padding: 72px 24px 96px; }
-  h1 { font-size: 2.4em; font-weight: 700; letter-spacing: -0.02em;
-       background: linear-gradient(135deg, #0969da 0%, #6f42c1 100%);
-       -webkit-background-clip: text; background-clip: text; color: transparent;
-       margin-bottom: 10px; }
-  .sub { color: #59636e; font-size: 1.12em; margin-bottom: 48px; font-weight: 400; }
-  .tag { display: inline-block; background: #ddf4ff; color: #0969da;
-         border: 1px solid rgba(9,105,218,0.25); border-radius: 999px;
-         padding: 3px 13px; margin: 4px 4px 4px 0; font-size: 0.82em;
-         font-weight: 500; transition: all .15s ease; }
-  .tag:hover { background: #0969da; color: #fff; transform: translateY(-1px); }
-  .card { background: #ffffff; border: 1px solid #d0d7de; border-radius: 16px;
-          padding: 28px; margin-bottom: 20px;
-          box-shadow: 0 1px 2px rgba(31,35,40,0.04), 0 8px 24px rgba(31,35,40,0.04);
-          transition: transform .18s ease, box-shadow .18s ease, border-color .18s ease; }
-  .card:hover { border-color: #0969da; transform: translateY(-3px);
-                box-shadow: 0 4px 8px rgba(31,35,40,0.06), 0 16px 40px rgba(31,35,40,0.08); }
-  .card h3 { font-size: 1.18em; font-weight: 600; margin-bottom: 4px; }
-  .card h3 a { color: #0969da; text-decoration: none; transition: color .15s ease; }
-  .card h3 a:hover { color: #0550ae; text-decoration: underline; }
-  .card p { color: #59636e; margin: 10px 0; font-size: 0.95em; }
-  .metric { color: #1a7f37; font-weight: 700; }
-  h2 { margin: 56px 0 18px; font-size: 1.32em; font-weight: 700; color: #1f2328;
-       border-left: 4px solid #0969da; padding-left: 14px; letter-spacing: -0.01em; }
-  a.btn { display: inline-block; background: #2da44e; color: #fff; padding: 10px 22px;
-          border-radius: 8px; text-decoration: none; margin: 20px 8px 0 0; font-weight: 600;
-          font-size: 0.92em; box-shadow: 0 1px 3px rgba(31,35,40,0.12);
-          transition: background .15s ease, transform .15s ease, box-shadow .15s ease; }
-  a.btn:hover { background: #1a7f37; transform: translateY(-1px);
-                box-shadow: 0 4px 10px rgba(26,127,55,0.25); }
-  .btn-secondary { background: #ffffff; color: #0969da; border: 1px solid #d0d7de; }
-  .btn-secondary:hover { background: #f6f8fa; color: #0550ae; border-color: #0969da;
-                          box-shadow: 0 4px 10px rgba(9,105,218,0.12); }
-  @media (max-width: 600px) {
-    .container { padding: 48px 18px 64px; }
-    h1 { font-size: 1.9em; }
-    .card { padding: 22px; }
+
+  html { scroll-behavior: smooth; }
+
+  body {
+    font-family: "LXGW WenKai", "Source Serif 4", "Noto Serif SC", "Inter", -apple-system, "PingFang SC", "Microsoft YaHei", sans-serif;
+    background: var(--bg);
+    color: var(--text);
+    line-height: 1.7;
+    font-weight: 400;
+    font-size: 16px;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+    text-rendering: optimizeLegibility;
+  }
+
+  ::selection { background: var(--accent); color: var(--bg); }
+
+  a { color: inherit; }
+
+  /* === Layout === */
+  .wrap {
+    max-width: 1120px;
+    margin: 0 auto;
+    padding: 0 56px;
+  }
+
+  /* === Top Nav === */
+  .top {
+    display: flex;
+    justify-content: space-between;
+    align-items: baseline;
+    padding: 28px 56px;
+    border-bottom: 1px solid var(--border-soft);
+  }
+
+  .top-logo {
+    font-family: "Source Serif 4", "LXGW WenKai", serif;
+    font-size: 17px;
+    font-weight: 600;
+    letter-spacing: -0.01em;
+  }
+
+  .top-logo span {
+    color: var(--text-faint);
+    font-weight: 400;
+    font-style: italic;
+    margin-left: 6px;
+  }
+
+  .top-nav {
+    display: flex;
+    gap: 36px;
+  }
+
+  .top-nav a {
+    color: var(--text-soft);
+    text-decoration: none;
+    font-size: 14px;
+    font-weight: 500;
+    font-family: "Inter", -apple-system, "PingFang SC", sans-serif;
+    transition: color 0.2s;
+  }
+
+  .top-nav a:hover { color: var(--text); }
+
+  /* === Hero === */
+  .hero {
+    padding: 112px 0 88px;
+    border-bottom: 1px solid var(--border-soft);
+  }
+
+  .eyebrow {
+    font-family: "JetBrains Mono", ui-monospace, "SF Mono", monospace;
+    font-size: 11px;
+    letter-spacing: 0.18em;
+    text-transform: uppercase;
+    color: var(--accent);
+    margin-bottom: 28px;
+    display: flex;
+    align-items: center;
+    gap: 12px;
+  }
+
+  .eyebrow::before {
+    content: "";
+    width: 24px;
+    height: 1px;
+    background: var(--accent);
+  }
+
+  .hero h1 {
+    font-family: "Source Serif 4", "LXGW WenKai", "Noto Serif SC", serif;
+    font-size: clamp(56px, 9vw, 112px);
+    font-weight: 500;
+    line-height: 1.0;
+    letter-spacing: -0.04em;
+    margin-bottom: 32px;
+    color: var(--text);
+  }
+
+  .hero h1 em {
+    font-style: italic;
+    font-weight: 400;
+    color: var(--text-soft);
+  }
+
+  .hero-tag {
+    font-family: "Source Serif 4", "LXGW WenKai", serif;
+    font-size: clamp(20px, 2.2vw, 26px);
+    font-weight: 400;
+    line-height: 1.5;
+    color: var(--text-soft);
+    max-width: 760px;
+    margin-bottom: 56px;
+  }
+
+  .hero-tag em {
+    font-style: italic;
+    color: var(--text);
+  }
+
+  .hero-meta {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 32px;
+    padding-top: 32px;
+    border-top: 1px solid var(--border);
+  }
+
+  .meta-item {
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+  }
+
+  .meta-label {
+    font-family: "JetBrains Mono", ui-monospace, monospace;
+    font-size: 10.5px;
+    letter-spacing: 0.15em;
+    text-transform: uppercase;
+    color: var(--text-faint);
+  }
+
+  .meta-value {
+    font-size: 15px;
+    color: var(--text);
+    font-weight: 500;
+  }
+
+  .meta-value a {
+    color: var(--text);
+    text-decoration: none;
+    border-bottom: 1px solid var(--border);
+    transition: border-color 0.2s;
+  }
+
+  .meta-value a:hover { border-color: var(--text); }
+
+  /* === Section === */
+  .section {
+    padding: 96px 0;
+    border-bottom: 1px solid var(--border-soft);
+  }
+
+  .section:last-of-type { border-bottom: none; }
+
+  .sec-head {
+    display: grid;
+    grid-template-columns: 180px 1fr;
+    gap: 56px;
+    align-items: start;
+    margin-bottom: 64px;
+  }
+
+  .sec-label {
+    font-family: "JetBrains Mono", ui-monospace, monospace;
+    font-size: 11px;
+    letter-spacing: 0.18em;
+    text-transform: uppercase;
+    color: var(--accent);
+    padding-top: 12px;
+  }
+
+  .sec-title {
+    font-family: "Source Serif 4", "LXGW WenKai", "Noto Serif SC", serif;
+    font-size: clamp(28px, 3.2vw, 40px);
+    font-weight: 500;
+    letter-spacing: -0.025em;
+    line-height: 1.25;
+    max-width: 720px;
+  }
+
+  .sec-title em {
+    font-style: italic;
+    font-weight: 400;
+    color: var(--text-soft);
+  }
+
+  /* === Projects === */
+  .project {
+    display: grid;
+    grid-template-columns: 100px 1fr 220px;
+    gap: 48px;
+    padding: 40px 0;
+    border-top: 1px solid var(--border);
+    transition: background 0.25s;
+  }
+
+  .project:first-of-type { border-top: 1px solid var(--text); }
+
+  .project:hover {
+    background: linear-gradient(to right, rgba(31, 74, 58, 0.02), transparent 60%);
+  }
+
+  .proj-num {
+    font-family: "JetBrains Mono", ui-monospace, monospace;
+    font-size: 13px;
+    color: var(--text-faint);
+    letter-spacing: 0.05em;
+    padding-top: 8px;
+  }
+
+  .proj-body { max-width: 640px; }
+
+  .proj-title {
+    font-family: "Source Serif 4", "LXGW WenKai", serif;
+    font-size: 28px;
+    font-weight: 600;
+    letter-spacing: -0.02em;
+    margin-bottom: 6px;
+    line-height: 1.2;
+  }
+
+  .proj-title a {
+    color: var(--text);
+    text-decoration: none;
+    background-image: linear-gradient(to right, var(--accent) 0%, var(--accent) 100%);
+    background-size: 0 1px;
+    background-repeat: no-repeat;
+    background-position: 0 100%;
+    transition: background-size 0.3s, color 0.2s;
+  }
+
+  .proj-title a:hover {
+    background-size: 100% 1px;
+    color: var(--accent);
+  }
+
+  .proj-sub {
+    font-family: "JetBrains Mono", ui-monospace, monospace;
+    font-size: 12px;
+    color: var(--text-faint);
+    letter-spacing: 0.06em;
+    margin-bottom: 18px;
+  }
+
+  .proj-desc {
+    font-size: 16.5px;
+    line-height: 1.7;
+    color: var(--text-soft);
+    margin-bottom: 14px;
+  }
+
+  .proj-highlight {
+    font-family: "Source Serif 4", "LXGW WenKai", serif;
+    font-size: 15.5px;
+    font-style: italic;
+    color: var(--accent);
+    padding-left: 14px;
+    border-left: 2px solid var(--accent);
+    margin-bottom: 20px;
+  }
+
+  .proj-tags {
+    display: flex;
+    gap: 8px;
+    flex-wrap: wrap;
+  }
+
+  .proj-tag {
+    font-family: "JetBrains Mono", ui-monospace, monospace;
+    font-size: 11.5px;
+    color: var(--text-soft);
+    padding: 4px 10px;
+    background: transparent;
+    border: 1px solid var(--border);
+    transition: border-color 0.2s, color 0.2s;
+  }
+
+  .proj-tag:hover { border-color: var(--text); color: var(--text); }
+
+  .proj-aside {
+    padding-top: 8px;
+    text-align: right;
+  }
+
+  .proj-year {
+    font-family: "JetBrains Mono", ui-monospace, monospace;
+    font-size: 11px;
+    color: var(--text-faint);
+    letter-spacing: 0.1em;
+    margin-bottom: 8px;
+  }
+
+  .proj-link {
+    display: inline-block;
+    color: var(--text);
+    text-decoration: none;
+    font-size: 13.5px;
+    font-weight: 500;
+    border-bottom: 1px solid var(--text);
+    padding-bottom: 1px;
+    transition: opacity 0.2s;
+  }
+
+  .proj-link:hover { opacity: 0.6; }
+
+  /* === Skills === */
+  .skills-grid {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 56px 80px;
+  }
+
+  .skill-cat { display: flex; flex-direction: column; }
+
+  .skill-cat-head {
+    display: flex;
+    align-items: baseline;
+    justify-content: space-between;
+    padding-bottom: 12px;
+    margin-bottom: 20px;
+    border-bottom: 1px solid var(--text);
+  }
+
+  .skill-cat-title {
+    font-family: "Source Serif 4", "LXGW WenKai", serif;
+    font-size: 20px;
+    font-weight: 600;
+    letter-spacing: -0.01em;
+  }
+
+  .skill-cat-num {
+    font-family: "JetBrains Mono", ui-monospace, monospace;
+    font-size: 11px;
+    color: var(--text-faint);
+    letter-spacing: 0.1em;
+  }
+
+  .skill-list {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+  }
+
+  .skill-item {
+    font-size: 15.5px;
+    color: var(--text-soft);
+    display: flex;
+    align-items: baseline;
+    gap: 12px;
+  }
+
+  .skill-item::before {
+    content: "—";
+    color: var(--text-faint);
+    font-size: 13px;
+  }
+
+  /* === Contact === */
+  .contact {
+    padding: 120px 0 88px;
+  }
+
+  .contact-eyebrow {
+    font-family: "JetBrains Mono", ui-monospace, monospace;
+    font-size: 11px;
+    letter-spacing: 0.18em;
+    text-transform: uppercase;
+    color: var(--accent);
+    margin-bottom: 24px;
+    display: flex;
+    align-items: center;
+    gap: 12px;
+  }
+
+  .contact-eyebrow::before {
+    content: "";
+    width: 24px;
+    height: 1px;
+    background: var(--accent);
+  }
+
+  .contact h2 {
+    font-family: "Source Serif 4", "LXGW WenKai", "Noto Serif SC", serif;
+    font-size: clamp(40px, 5.5vw, 72px);
+    font-weight: 500;
+    line-height: 1.1;
+    letter-spacing: -0.035em;
+    margin-bottom: 32px;
+    max-width: 900px;
+  }
+
+  .contact h2 em {
+    font-style: italic;
+    font-weight: 400;
+    color: var(--text-soft);
+  }
+
+  .contact-text {
+    font-size: 18px;
+    line-height: 1.7;
+    color: var(--text-soft);
+    max-width: 600px;
+    margin-bottom: 48px;
+  }
+
+  .contact-links {
+    display: flex;
+    flex-direction: column;
+    gap: 0;
+  }
+
+  .contact-link {
+    display: flex;
+    align-items: baseline;
+    justify-content: space-between;
+    padding: 22px 0;
+    border-top: 1px solid var(--border);
+    text-decoration: none;
+    color: var(--text);
+    transition: padding 0.25s, color 0.2s, background 0.25s;
+  }
+
+  .contact-link:last-child { border-bottom: 1px solid var(--border); }
+
+  .contact-link:hover {
+    padding-left: 12px;
+    color: var(--accent);
+    background: linear-gradient(to right, rgba(31, 74, 58, 0.03), transparent);
+  }
+
+  .contact-link-left {
+    display: flex;
+    align-items: baseline;
+    gap: 20px;
+  }
+
+  .contact-link-num {
+    font-family: "JetBrains Mono", ui-monospace, monospace;
+    font-size: 11px;
+    color: var(--text-faint);
+    letter-spacing: 0.1em;
+    min-width: 28px;
+  }
+
+  .contact-link-label {
+    font-family: "Source Serif 4", "LXGW WenKai", serif;
+    font-size: 22px;
+    font-weight: 500;
+    letter-spacing: -0.01em;
+  }
+
+  .contact-link-arrow {
+    font-family: "JetBrains Mono", ui-monospace, monospace;
+    font-size: 14px;
+    color: var(--text-faint);
+    transition: transform 0.25s, color 0.2s;
+  }
+
+  .contact-link:hover .contact-link-arrow {
+    transform: translateX(6px);
+    color: var(--accent);
+  }
+
+  /* === Footer === */
+  footer {
+    padding: 32px 56px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    font-size: 12px;
+    color: var(--text-faint);
+    font-family: "JetBrains Mono", ui-monospace, monospace;
+    letter-spacing: 0.05em;
+    border-top: 1px solid var(--border-soft);
+  }
+
+  /* === Responsive === */
+  @media (max-width: 900px) {
+    .wrap { padding: 0 32px; }
+    .top { padding: 24px 32px; }
+    footer { padding: 28px 32px; }
+    .sec-head { grid-template-columns: 1fr; gap: 16px; margin-bottom: 40px; }
+    .project { grid-template-columns: 1fr; gap: 16px; }
+    .proj-aside { text-align: left; padding-top: 0; }
+    .skills-grid { grid-template-columns: 1fr; gap: 40px; }
+    .hero-meta { grid-template-columns: repeat(2, 1fr); }
+  }
+
+  @media (max-width: 560px) {
+    .wrap { padding: 0 20px; }
+    .top { padding: 20px 20px; flex-direction: column; gap: 12px; align-items: flex-start; }
+    .top-nav { gap: 24px; }
+    footer { padding: 24px 20px; flex-direction: column; gap: 8px; align-items: flex-start; }
+    .hero { padding: 64px 0 56px; }
+    .section { padding: 64px 0; }
+    .contact { padding: 72px 0 56px; }
+    .contact-link-label { font-size: 18px; }
   }
 </style>
 </head>
 <body>
-<div class="container">
-  <h1>牟圣熹</h1>
-  <p class="sub">大模型应用开发 ｜ 数据科学专业应届生 ｜ 西安财经大学</p>
 
-  <h2>🔥 项目</h2>
-
-  <div class="card">
-    <h3><a href="https://github.com/xix-060/AI-Agent-learning_mim/tree/main/scholar_knowledge">ScholarGraph — 学术知识图谱问答系统</a></h3>
-    <p>用知识图谱多跳推理，回答纯向量 RAG 答不了的跨文档关系问题（"某论文的作者还发表过什么"）。</p>
-    <p>向量+图谱混合检索 · 查询改写 · 错误分析三分类调优 · 自建 100 条评测集命中率 <span class="metric">62% → >85%</span></p>
-    <span class="tag">Python</span><span class="tag">NetworkX</span><span class="tag">ChromaDB</span><span class="tag">Streamlit</span>
+<nav class="top">
+  <div class="top-logo">牟圣熹 <span>Mou Shengxi</span></div>
+  <div class="top-nav">
+    <a href="#projects">项目</a>
+    <a href="#skills">技能</a>
+    <a href="#contact">联系</a>
   </div>
+</nav>
 
-  <div class="card">
-    <h3><a href="https://github.com/xix-060/AI-Agent-learning_mim/tree/main/knowledge_agent">Knowledge Agent — 知识库问答 Agent</a></h3>
-    <p>LangGraph 状态机驱动的多轮问答 Agent，带记忆、工具调用与人工确认节点。</p>
-    <p>RAG 全链路（分块实验 → 检索 → 重排 → RAGAS 评估）· FastAPI 服务化</p>
-    <span class="tag">LangGraph</span><span class="tag">RAG</span><span class="tag">FastAPI</span>
-  </div>
+<div class="wrap">
 
-  <div class="card">
-    <h3><a href="https://github.com/xix-060/AI-Agent-learning_mim/tree/main/paper_vision_agent">Paper Vision Agent — 论文图表多模态问答</a></h3>
-    <p>视觉大模型结构化解析论文图表，联动知识图谱做答案佐证，支持多轮追问。</p>
-    <span class="tag">GLM-4V</span><span class="tag">多模态</span><span class="tag">GraphRAG</span>
-  </div>
+  <!-- HERO -->
+  <header class="hero">
+    <div class="eyebrow">Portfolio · 2026</div>
+    <h1>构建能<em>真正回答</em><br>复杂问题的 AI 系统。</h1>
+    <p class="hero-tag">牟圣熹，大模型应用开发方向。围绕 <em>RAG、Agent、知识图谱、多模态检索</em> 做工程化实践，把论文里的方法变成能跑起来的产品。</p>
+    <div class="hero-meta">
+      <div class="meta-item">
+        <span class="meta-label">学校</span>
+        <span class="meta-value">西安财经大学</span>
+      </div>
+      <div class="meta-item">
+        <span class="meta-label">专业</span>
+        <span class="meta-value">数据科学</span>
+      </div>
+      <div class="meta-item">
+        <span class="meta-label">方向</span>
+        <span class="meta-value">大模型应用开发</span>
+      </div>
+      <div class="meta-item">
+        <span class="meta-label">状态</span>
+        <span class="meta-value"><a href="#contact">2027应届生 · 开放机会</a></span>
+      </div>
+    </div>
+  </header>
 
-  <h2>🛠 技术栈</h2>
-  <div>
-    <span class="tag">RAG 全链路</span><span class="tag">Agent 编排</span><span class="tag">Function Calling / MCP</span>
-    <span class="tag">LoRA 微调</span><span class="tag">vLLM 部署</span><span class="tag">Docker</span><span class="tag">Prometheus</span>
-  </div>
+  <!-- PROJECTS -->
+  <section class="section" id="projects">
+    <div class="sec-head">
+      <div class="sec-label">01 — 项目</div>
+      <h2 class="sec-title">从纯向量 RAG 到<em>图谱+多模态</em>，把"答不上"变成"答得准"。</h2>
+    </div>
 
-  <h2>📩 找到我</h2>
-  <a class="btn" href="https://github.com/xix-060">GitHub</a>
-  <a class="btn btn-secondary" href="mailto:msxiii_356@163.com">邮箱</a>
+    <div class="project">
+      <div class="proj-num">/ 01</div>
+      <div class="proj-body">
+        <h3 class="proj-title"><a href="https://github.com/xix-060/AI-Agent-learning_mim/tree/main/scholar_knowledge">ScholarGraph</a></h3>
+        <div class="proj-sub">Academic Knowledge Graph QA</div>
+        <p class="proj-desc">用知识图谱的多跳推理，回答纯向量 RAG 答不了的跨文档关系问题——比如"某论文的作者还发表过什么"。向量检索负责"召回相似"，图谱一跳负责"召回相关"。</p>
+        <p class="proj-highlight">向量 + 图谱混合检索 · 自建 100 条评测集，命中率 62% → >85%+</p>
+        <div class="proj-tags">
+          <span class="proj-tag">Python</span>
+          <span class="proj-tag">NetworkX</span>
+          <span class="proj-tag">ChromaDB</span>
+          <span class="proj-tag">Streamlit</span>
+        </div>
+      </div>
+      <div class="proj-aside">
+        <div class="proj-year">2025</div>
+        <a class="proj-link" href="https://github.com/xix-060/AI-Agent-learning_mim/tree/main/scholar_knowledge">查看 →</a>
+      </div>
+    </div>
+
+    <div class="project">
+      <div class="proj-num">/ 02</div>
+      <div class="proj-body">
+        <h3 class="proj-title"><a href="https://github.com/xix-060/AI-Agent-learning_mim/tree/main/knowledge_agent">Knowledge Agent</a></h3>
+        <div class="proj-sub">RAG-Powered Multi-turn Agent</div>
+        <p class="proj-desc">LangGraph 状态机驱动的多轮问答 Agent，带会话记忆、工具调用与人工确认节点。覆盖 RAG 全链路：分块实验 → 检索 → 重排 → RAGAS 评估，最后用 FastAPI 暴露成可调用的服务。</p>
+        <p class="proj-highlight">完整产品化链路 · 分块策略 + 重排模型都对最终召回有显著影响</p>
+        <div class="proj-tags">
+          <span class="proj-tag">LangGraph</span>
+          <span class="proj-tag">RAG</span>
+          <span class="proj-tag">FastAPI</span>
+          <span class="proj-tag">RAGAS</span>
+        </div>
+      </div>
+      <div class="proj-aside">
+        <div class="proj-year">2025</div>
+        <a class="proj-link" href="https://github.com/xix-060/AI-Agent-learning_mim/tree/main/knowledge_agent">查看 →</a>
+      </div>
+    </div>
+
+    <div class="project">
+      <div class="proj-num">/ 03</div>
+      <div class="proj-body">
+        <h3 class="proj-title"><a href="https://github.com/xix-060/AI-Agent-learning_mim/tree/main/paper_vision_agent">Paper Vision Agent</a></h3>
+        <div class="proj-sub">Multimodal Figure QA over Knowledge Graph</div>
+        <p class="proj-desc">视觉大模型结构化解析论文图表，联动知识图谱做答案佐证，支持多轮追问。覆盖论文里"看图说话"这一类纯文本 RAG 完全无能为力的场景。</p>
+        <p class="proj-highlight">GLM-4V 图文解析 · 答案回链到图谱节点</p>
+        <div class="proj-tags">
+          <span class="proj-tag">GLM-4V</span>
+          <span class="proj-tag">多模态</span>
+          <span class="proj-tag">GraphRAG</span>
+        </div>
+      </div>
+      <div class="proj-aside">
+        <div class="proj-year">2025</div>
+        <a class="proj-link" href="https://github.com/xix-060/AI-Agent-learning_mim/tree/main/paper_vision_agent">查看 →</a>
+      </div>
+    </div>
+  </section>
+
+  <!-- SKILLS -->
+  <section class="section" id="skills">
+    <div class="sec-head">
+      <div class="sec-label">02 — 技能</div>
+      <h2 class="sec-title">围绕 <em>LLM 应用工程化</em> 的能力栈。</h2>
+    </div>
+
+    <div class="skills-grid">
+      <div class="skill-cat">
+        <div class="skill-cat-head">
+          <div class="skill-cat-title">LLM 应用</div>
+          <div class="skill-cat-num">01</div>
+        </div>
+        <div class="skill-list">
+          <div class="skill-item">RAG 全链路 · 分块 / 检索 / 重排 / 评估</div>
+          <div class="skill-item">Agent 编排 · LangGraph 状态机</div>
+          <div class="skill-item">Function Calling / MCP 协议</div>
+          <div class="skill-item">Prompt 工程与错误分析</div>
+        </div>
+      </div>
+
+      <div class="skill-cat">
+        <div class="skill-cat-head">
+          <div class="skill-cat-title">模型与部署</div>
+          <div class="skill-cat-num">02</div>
+        </div>
+        <div class="skill-list">
+          <div class="skill-item">LoRA 微调</div>
+          <div class="skill-item">vLLM 推理部署</div>
+          <div class="skill-item">多模态模型 · GLM-4V</div>
+          <div class="skill-item">Embedding & 向量数据库</div>
+        </div>
+      </div>
+
+      <div class="skill-cat">
+        <div class="skill-cat-head">
+          <div class="skill-cat-title">工程化</div>
+          <div class="skill-cat-num">03</div>
+        </div>
+        <div class="skill-list">
+          <div class="skill-item">Python · FastAPI</div>
+          <div class="skill-item">Docker 容器化</div>
+          <div class="skill-item">Prometheus 监控</div>
+          <div class="skill-item">Git / Linux 日常</div>
+        </div>
+      </div>
+
+      <div class="skill-cat">
+        <div class="skill-cat-head">
+          <div class="skill-cat-title">数据基础</div>
+          <div class="skill-cat-num">04</div>
+        </div>
+        <div class="skill-list">
+          <div class="skill-item">数据科学专业</div>
+          <div class="skill-item">Python 数据栈 · Pandas / NumPy / sklearn</div>
+          <div class="skill-item">经典模型 · LR / RF / XGBoost</div>
+          <div class="skill-item">知识图谱 · NetworkX</div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- CONTACT -->
+  <section class="contact" id="contact">
+    <div class="contact-eyebrow">03 — 联系</div>
+    <h2>欢迎交流 AI 应用<br>工程化，或聊点别的。</h2>
+    <p class="contact-text">目前在看大模型应用开发岗位，RAG / Agent / 知识图谱方向都行。也可以一起聊开源、技术选型，或者随便聊聊。</p>
+    <div class="contact-links">
+      <a class="contact-link" href="https://github.com/xix-060">
+        <div class="contact-link-left">
+          <span class="contact-link-num">/ 01</span>
+          <span class="contact-link-label">GitHub</span>
+        </div>
+        <span class="contact-link-arrow">→ github.com/xix-060</span>
+      </a>
+      <a class="contact-link" href="mailto:msxiii_356@163.com">
+        <div class="contact-link-left">
+          <span class="contact-link-num">/ 02</span>
+          <span class="contact-link-label">邮箱</span>
+        </div>
+        <span class="contact-link-arrow">→ msxiii_356@163.com</span>
+      </a>
+      <a class="contact-link" href="https://xix-060.github.io/portfolio">
+        <div class="contact-link-left">
+          <span class="contact-link-num">/ 03</span>
+          <span class="contact-link-label">作品集</span>
+        </div>
+        <span class="contact-link-arrow">→ xix-060.github.io/portfolio</span>
+      </a>
+    </div>
+  </section>
+
 </div>
+
+<footer>
+  <div>© 2026 Mou Shengxi</div>
+  <div>Built with care</div>
+</footer>
+
 </body>
 </html>
