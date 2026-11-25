@@ -13,6 +13,13 @@
     padding: 20px;
   }
   header { text-align: center; margin-bottom: 14px; }
+  .back-link {
+    position: fixed; top: 16px; left: 16px; z-index: 60;
+    color: #8a8f98; text-decoration: none; font-size: .8em;
+    background: #1c1f2a; border: 1px solid #2a2e3c; border-radius: 999px;
+    padding: 6px 12px; transition: all .2s;
+  }
+  .back-link:hover { color: #fff; border-color: #f76707; }
   h1 { font-size: 1.6em; letter-spacing: 2px; }
   h1 .accent { color: #f2b179; }
   .sub { color: #8a8f98; font-size: .85em; margin-top: 4px; }
@@ -109,6 +116,7 @@
 </style>
 </head>
 <body>
+<a class="back-link" href="../" aria-label="返回作品集">← 返回作品集</a>
 <header>
   <h1>2048 <span class="accent">对战版</span></h1>
   <div class="sub">双人轮流制 · 先合成 2048 或逼对手死局者胜</div>
