@@ -1,0 +1,331 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>2048 对战版 · 双人轮流制</title>
+<style>
+  * { margin: 0; padding: 0; box-sizing: border-box; user-select: none; }
+  body {
+    font-family: "Segoe UI", "PingFang SC", "Microsoft YaHei", sans-serif;
+    background: #12141c; color: #e8e6e3;
+    min-height: 100vh; display: flex; flex-direction: column; align-items: center;
+    padding: 20px;
+  }
+  header { text-align: center; margin-bottom: 14px; }
+  h1 { font-size: 1.6em; letter-spacing: 2px; }
+  h1 .accent { color: #f2b179; }
+  .sub { color: #8a8f98; font-size: .85em; margin-top: 4px; }
+  .turn-bar {
+    display: flex; align-items: center; gap: 14px; margin: 10px 0 18px;
+    background: #1c1f2a; padding: 8px 18px; border-radius: 10px;
+    border: 1px solid #2a2e3c; font-size: .95em;
+  }
+  .turn-chip {
+    padding: 4px 14px; border-radius: 20px; font-weight: 600; transition: all .25s;
+    border: 1px solid transparent; opacity: .45;
+  }
+  .turn-chip.active { opacity: 1; transform: scale(1.06); }
+  #chip1.active { background: #3b5bdb33; border-color: #4c6ef5; color: #7aa2ff; }
+  #chip2.active { background: #e8590c33; border-color: #f76707; color: #ffa94d; }
+  .vs { color: #8a8f98; font-size: .8em; }
+
+  .boards { display: flex; gap: 28px; flex-wrap: wrap; justify-content: center; }
+  .board-wrap { position: relative; }
+  .board-head {
+    display: flex; justify-content: space-between; align-items: baseline;
+    padding: 0 4px 8px;
+  }
+  .board-title { font-weight: 700; font-size: 1.05em; }
+  #t1 { color: #7aa2ff; } #t2 { color: #ffa94d; }
+  .score { font-size: .9em; color: #b0b6c0; }
+  .score b { color: #fff; font-size: 1.1em; }
+  .board {
+    display: grid; grid-template-columns: repeat(4, 84px); gap: 10px;
+    background: #1c1f2a; padding: 10px; border-radius: 12px;
+    border: 2px solid #2a2e3c; transition: border-color .25s;
+  }
+  .board.active-p1 { border-color: #4c6ef5; }
+  .board.active-p2 { border-color: #f76707; }
+  .board.dim { opacity: .55; }
+  .cell {
+    width: 84px; height: 84px; border-radius: 8px;
+    background: #262a38; display: flex; align-items: center; justify-content: center;
+    font-weight: 800; font-size: 1.5em;
+  }
+  .cell.pop { animation: pop .18s ease-out; }
+  .cell.appear { animation: appear .2s ease-out; }
+  @keyframes pop   { 0% { transform: scale(1);} 50% { transform: scale(1.18);} 100% { transform: scale(1);} }
+  @keyframes appear{ 0% { transform: scale(.3); opacity: 0;} 100% { transform: scale(1); opacity: 1;} }
+  .shake { animation: shake .25s; }
+  @keyframes shake { 0%,100%{transform:translateX(0)} 25%{transform:translateX(-5px)} 75%{transform:translateX(5px)} }
+
+  .v2    { background:#eee4da; color:#776e65; }
+  .v4    { background:#ede0c8; color:#776e65; }
+  .v8    { background:#f2b179; color:#fff; }
+  .v16   { background:#f59563; color:#fff; }
+  .v32   { background:#f67c5f; color:#fff; }
+  .v64   { background:#f65e3b; color:#fff; }
+  .v128  { background:#edcf72; color:#fff; font-size:1.35em; }
+  .v256  { background:#edcc61; color:#fff; font-size:1.35em; }
+  .v512  { background:#edc850; color:#fff; font-size:1.35em; }
+  .v1024 { background:#edc53f; color:#fff; font-size:1.1em; }
+  .v2048 { background:#edc22e; color:#fff; font-size:1.1em; box-shadow:0 0 18px #edc22e88; }
+  .vbig  { background:#3c3a32; color:#fff; }
+
+  .keys {
+    display: flex; gap: 40px; margin-top: 20px; font-size: .85em; color: #8a8f98;
+  }
+  .keys kbd {
+    background: #262a38; padding: 2px 8px; border-radius: 5px;
+    border: 1px solid #3a3f52; margin: 0 1px; font-family: inherit;
+  }
+  .keys .k1 kbd { border-color: #4c6ef5; } .keys .k2 kbd { border-color: #f76707; }
+
+  .overlay {
+    position: absolute; inset: 0; border-radius: 12px;
+    background: rgba(18,20,28,.82); backdrop-filter: blur(3px);
+    display: flex; flex-direction: column; align-items: center; justify-content: center;
+    gap: 14px; opacity: 0; pointer-events: none; transition: opacity .3s; z-index: 5;
+  }
+  .overlay.show { opacity: 1; pointer-events: auto; }
+  .overlay .big { font-size: 1.5em; font-weight: 800; }
+  .overlay.win1 .big { color: #7aa2ff; } .overlay.win2 .big { color: #ffa94d; }
+  .overlay .desc { color: #b0b6c0; font-size: .9em; }
+  .overlay button {
+    background: #f76707; color: #fff; border: none; padding: 8px 26px;
+    border-radius: 8px; font-size: 1em; cursor: pointer; font-weight: 600;
+  }
+  .overlay button:hover { filter: brightness(1.1); }
+  #globalOverlay {
+    position: fixed; inset: 0; display: flex; align-items: center; justify-content: center;
+    background: rgba(10,11,16,.7); z-index: 50; opacity: 0; pointer-events: none; transition: opacity .3s;
+  }
+  #globalOverlay.show { opacity: 1; pointer-events: auto; }
+  #globalOverlay .card {
+    background: #1c1f2a; border: 1px solid #3a3f52; border-radius: 16px;
+    padding: 36px 48px; text-align: center;
+  }
+</style>
+</head>
+<body>
+<header>
+  <h1>2048 <span class="accent">对战版</span></h1>
+  <div class="sub">双人轮流制 · 先合成 2048 或逼对手死局者胜</div>
+</header>
+
+<div class="turn-bar">
+  <span id="chip1" class="turn-chip">🎮 玩家 1</span>
+  <span class="vs">VS</span>
+  <span id="chip2" class="turn-chip">🎮 玩家 2</span>
+</div>
+
+<div class="boards">
+  <div class="board-wrap" id="wrap1">
+    <div class="board-head">
+      <span class="board-title" id="t1">玩家 1</span>
+      <span class="score">得分 <b id="score1">0</b></span>
+    </div>
+    <div class="board" id="board1"></div>
+    <div class="overlay" id="over1"><div class="big"></div><div class="desc"></div></div>
+  </div>
+  <div class="board-wrap" id="wrap2">
+    <div class="board-head">
+      <span class="board-title" id="t2">玩家 2</span>
+      <span class="score">得分 <b id="score2">0</b></span>
+    </div>
+    <div class="board" id="board2"></div>
+    <div class="overlay" id="over2"><div class="big"></div><div class="desc"></div></div>
+  </div>
+</div>
+
+<div class="keys">
+  <span class="k1">玩家 1：<kbd>↑</kbd><kbd>↓</kbd><kbd>←</kbd><kbd>→</kbd></span>
+  <span class="k2">玩家 2：<kbd>W</kbd><kbd>A</kbd><kbd>S</kbd><kbd>D</kbd></span>
+</div>
+
+<div id="globalOverlay"><div class="card">
+  <div class="big" id="finalMsg" style="font-size:1.6em;font-weight:800;margin-bottom:8px;"></div>
+  <div style="color:#b0b6c0;font-size:.9em;margin-bottom:20px;" id="finalDesc"></div>
+  <button onclick="reset()">再来一局</button>
+</div></div>
+
+<script>
+"use strict";
+/* =========================================================
+ * 状态模型
+ * player = { grid: number[4][4], score: int, dead: bool }
+ * ========================================================= */
+const SIZE = 4, WIN = 2048;
+let players, current, gameOver;
+
+const KEYMAP = {
+  ArrowUp: [1,"up"], ArrowDown: [1,"down"], ArrowLeft: [1,"left"], ArrowRight: [1,"right"],
+  KeyW: [2,"up"], KeyS: [2,"down"], KeyA: [2,"left"], KeyD: [2,"right"],
+};
+
+function emptyGrid(){ return Array.from({length:SIZE},()=>Array(SIZE).fill(0)); }
+
+function spawn(grid){
+  const empties = [];
+  for (let r=0;r<SIZE;r++) for (let c=0;c<SIZE;c++) if (grid[r][c]===0) empties.push([r,c]);
+  if (!empties.length) return null;
+  const [r,c] = empties[Math.floor(Math.random()*empties.length)];
+  grid[r][c] = Math.random() < 0.9 ? 2 : 4;
+  return [r,c];
+}
+
+/* 核心：一行向左滑动 + 合并（同值每行只合并一次） */
+function slideRowLeft(row){
+  const tiles = row.filter(v => v !== 0);
+  const out = []; let gained = 0; let mergedAt = -1;
+  for (let i = 0; i < tiles.length; i++){
+    if (i+1 < tiles.length && tiles[i] === tiles[i+1]){
+      const v = tiles[i]*2;
+      out.push(v); gained += v; mergedAt = out.length-1;
+      i++; // 跳过被合并的块 —— 保证一次合并
+    } else out.push(tiles[i]);
+  }
+  while (out.length < SIZE) out.push(0);
+  return { row: out, gained, mergedAt };
+}
+
+/* 对 grid 施加方向，返回 {grid, gained, changed, mergedCells, new2048} */
+function move(grid, dir){
+  let gained = 0, changed = false, new2048 = false;
+  const mergedCells = [];
+  const ng = emptyGrid();
+
+  for (let i = 0; i < SIZE; i++){
+    let line = [], coords = [];
+    for (let j = 0; j < SIZE; j++){
+      if      (dir==="left")  { line.push(grid[i][j]);   coords.push([i,j]); }
+      else if (dir==="right") { line.push(grid[i][SIZE-1-j]); coords.push([i,SIZE-1-j]); }
+      else if (dir==="up")    { line.push(grid[j][i]);   coords.push([j,i]); }
+      else                    { line.push(grid[SIZE-1-j][i]); coords.push([SIZE-1-j,i]); }
+    }
+    const res = slideRowLeft(line);
+    if (res.row.join() !== line.join()) changed = true;
+    gained += res.gained;
+    if (res.mergedAt >= 0){
+      mergedCells.push(coords[res.mergedAt]);
+      if (res.row[res.mergedAt] >= WIN) new2048 = true;
+    }
+    for (let j = 0; j < SIZE; j++){
+      const [r,c] = coords[j];
+      ng[r][c] = res.row[j];
+    }
+  }
+  return { grid: ng, gained, changed, mergedCells, new2048 };
+}
+
+function canMove(grid){
+  for (let r=0;r<SIZE;r++) for (let c=0;c<SIZE;c++){
+    if (grid[r][c]===0) return true;
+    if (c+1<SIZE && grid[r][c]===grid[r][c+1]) return true;
+    if (r+1<SIZE && grid[r][c]===grid[r+1][c]) return true;
+  }
+  return false;
+}
+
+/* =========================================================
+ * 渲染
+ * ========================================================= */
+const boardEls = {1: document.getElementById("board1"), 2: document.getElementById("board2")};
+const scoreEls = {1: document.getElementById("score1"), 2: document.getElementById("score2")};
+
+function valueClass(v){
+  if (v===0) return "";
+  if (v<=2048) return "v"+v;
+  return "vbig";
+}
+
+function render(playerId, mergedCells, spawnCell){
+  const p = players[playerId];
+  const board = boardEls[playerId];
+  board.innerHTML = "";
+  const mergedSet = new Set((mergedCells||[]).map(([r,c])=>r+","+c));
+  for (let r=0;r<SIZE;r++) for (let c=0;c<SIZE;c++){
+    const cell = document.createElement("div");
+    const v = p.grid[r][c];
+    cell.className = "cell" + (v ? " "+valueClass(v) : "");
+    if (v){
+      cell.textContent = v;
+      if (mergedSet.has(r+","+c)) cell.classList.add("pop");
+      if (spawnCell && spawnCell[0]===r && spawnCell[1]===c) cell.classList.add("appear");
+    }
+    board.appendChild(cell);
+  }
+  scoreEls[playerId].textContent = p.score;
+}
+
+function renderTurn(){
+  document.getElementById("chip1").classList.toggle("active", current===1 && !gameOver);
+  document.getElementById("chip2").classList.toggle("active", current===2 && !gameOver);
+  boardEls[1].className = "board" + (!gameOver && current===1 ? " active-p1" : " dim");
+  boardEls[2].className = "board" + (!gameOver && current===2 ? " active-p2" : " dim");
+}
+
+/* =========================================================
+ * 游戏流程
+ * ========================================================= */
+function handleMove(playerId, dir){
+  if (gameOver || playerId !== current) return;
+  const p = players[playerId];
+  const result = move(p.grid, dir);
+
+  if (!result.changed){
+    // 无效移动：不轮换、不生成新块，给抖动反馈
+    const b = boardEls[playerId];
+    b.classList.remove("shake"); void b.offsetWidth; b.classList.add("shake");
+    return;
+  }
+
+  p.grid = result.grid;
+  p.score += result.gained;
+  const spawnCell = spawn(p.grid);
+  render(playerId, result.mergedCells, spawnCell);
+
+  // 胜利判定 1：合成 2048
+  if (result.new2048) return endGame(playerId, "合成 "+WIN+"！");
+  // 胜利判定 2：对手死局
+  if (!canMove(players[3-playerId].grid)) return endGame(playerId, "对手棋盘死局");
+  // 胜利判定 3：自己死局（对手胜）
+  if (!canMove(p.grid)) return endGame(3-playerId, "你的棋盘死局");
+
+  current = 3 - current;
+  renderTurn();
+}
+
+function endGame(winnerId, reason){
+  gameOver = true;
+  renderTurn();
+  const ov = document.getElementById("globalOverlay");
+  document.getElementById("finalMsg").textContent = "🏆 玩家 " + winnerId + " 获胜！";
+  document.getElementById("finalDesc").textContent = reason + " ·  P" + winnerId + " 得分 " + players[winnerId].score + " : " + players[3-winnerId].score;
+  ov.classList.add("show");
+}
+
+function reset(){
+  players = {
+    1: { grid: emptyGrid(), score: 0 },
+    2: { grid: emptyGrid(), score: 0 },
+  };
+  current = 1; gameOver = false;
+  document.getElementById("globalOverlay").classList.remove("show");
+  spawn(players[1].grid); spawn(players[1].grid);
+  spawn(players[2].grid); spawn(players[2].grid);
+  render(1); render(2); renderTurn();
+}
+
+document.addEventListener("keydown", e => {
+  const mapped = KEYMAP[e.code];
+  if (!mapped) return;
+  e.preventDefault();
+  handleMove(mapped[0], mapped[1]);
+});
+
+reset();
+</script>
+</body>
+</html>

@@ -391,6 +391,34 @@
     border: 1px solid var(--border);
   }
 
+  .proj-links {
+    display: flex;
+    gap: 18px;
+    flex-wrap: wrap;
+    margin-top: 18px;
+    font-family: "Inter", -apple-system, "PingFang SC", sans-serif;
+    font-size: 13.5px;
+    font-weight: 500;
+  }
+
+  .proj-links a {
+    color: var(--text);
+    text-decoration: none;
+    border-bottom: 1px solid var(--text);
+    padding-bottom: 1px;
+    transition: color 0.2s, border-color 0.2s;
+  }
+
+  .proj-links a:hover {
+    color: var(--accent);
+    border-color: var(--accent);
+  }
+
+  .proj-links a.muted {
+    color: var(--text-soft);
+    border-color: var(--border);
+  }
+
   .proj-demo {
     margin-top: 22px;
     width: 100%;
@@ -738,6 +766,28 @@
           <img src="assets/paper_vision_agent.gif" alt="Paper Vision Agent 演示">
           <div class="proj-demo-cap"><span>Demo · 论文图表多模态问答</span></div>
         </div>
+      </div>
+    </div>
+
+    <div class="project">
+      <div class="proj-num">/ 04</div>
+      <div class="proj-body">
+        <h3 class="proj-title">
+          <a href="2048-battle/">2048 对战版<span class="arrow">↗</span></a>
+        </h3>
+        <div class="proj-sub">Turn-based Battle 2048 · Vibe Coding</div>
+        <p class="proj-desc">把单人 2048 改造成双人回合制对战：双方各持 4×4 棋盘轮流出手，先合成 2048、或把对手逼入死局者获胜。用「验收标准先行 + 小步提交」的指令流程驱动 AI 生成，规则正确性全部由可判定的回归用例兜底。</p>
+        <p class="proj-highlight">1 小时交付可玩 Demo · 指令迭代 7 轮（含 2 个 Bad Case 修复）· 35 条逻辑回归用例通过</p>
+        <div class="proj-tags">
+          <span class="proj-tag">HTML5</span>
+          <span class="proj-tag">JavaScript</span>
+          <span class="proj-tag">Vibe Coding</span>
+          <span class="proj-tag">Spec-driven</span>
+        </div>
+        <p class="proj-links">
+          <a href="2048-battle/">打开 Demo ↗</a>
+          <a class="muted" href="https://github.com/xix-060/portfolio/blob/main/docs/2048-battle-instruction-design.md">指令设计文档 ↗</a>
+        </p>
       </div>
     </div>
   </section>
