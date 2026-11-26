@@ -4,128 +4,292 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>2048 对战版 · 双人轮流制</title>
+
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Source+Serif+4:opsz,wght@8..60,300;8..60,400;8..60,500;8..60,600;8..60,700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/lxgw-wenkai-webfont@1.7.0/style.css">
+
 <style>
+  /* = 作品集对齐变量 = */
+  :root {
+    --bg:        #faf8f3;
+    --bg-soft:   #f4f1ea;
+    --text:      #1a1a1a;
+    --text-soft: #5a5a5a;
+    --text-faint:#9a968d;
+    --accent:    #1f4a3a;
+    --accent-soft:#e8efe9;
+    --warm:      #b87333;
+    --border:    #e3ddd0;
+    --border-soft:#ece7da;
+
+    --p1-color:  #1f4a3a;        /* 玩家一：墨绿 */
+    --p1-bg:     #e8efe9;
+    --p2-color:  #b87333;        /* 玩家二：金属金 */
+    --p2-bg:     #f5efe4;
+  }
+
   * { margin: 0; padding: 0; box-sizing: border-box; user-select: none; }
+
+  html { scroll-behavior: smooth; }
+
   body {
-    font-family: "Segoe UI", "PingFang SC", "Microsoft YaHei", sans-serif;
-    background: #12141c; color: #e8e6e3;
-    min-height: 100vh; display: flex; flex-direction: column; align-items: center;
-    padding: 20px;
+    font-family: "Source Serif 4", "LXGW WenKai", "Noto Serif SC", serif;
+    background: var(--bg);
+    color: var(--text);
+    line-height: 1.6;
+    min-height: 100vh;
+    display: flex; flex-direction: column; align-items: center;
+    padding: 36px 24px 48px;
+    -webkit-font-smoothing: antialiased;
   }
-  header { text-align: center; margin-bottom: 14px; }
+
+  /* === 顶部导航 === */
+  .top-row {
+    width: 100%; max-width: 960px;
+    display: flex; justify-content: space-between; align-items: center;
+    margin-bottom: 28px;
+  }
   .back-link {
-    position: fixed; top: 16px; left: 16px; z-index: 60;
-    color: #8a8f98; text-decoration: none; font-size: .8em;
-    background: #1c1f2a; border: 1px solid #2a2e3c; border-radius: 999px;
-    padding: 6px 12px; transition: all .2s;
+    font-family: "JetBrains Mono", ui-monospace, monospace;
+    font-size: 11px; letter-spacing: 0.12em; text-transform: uppercase;
+    color: var(--text-faint); text-decoration: none;
+    border-bottom: 1px solid var(--border);
+    padding-bottom: 2px;
+    transition: color .2s, border-color .2s;
   }
-  .back-link:hover { color: #fff; border-color: #f76707; }
-  h1 { font-size: 1.6em; letter-spacing: 2px; }
-  h1 .accent { color: #f2b179; }
-  .sub { color: #8a8f98; font-size: .85em; margin-top: 4px; }
+  .back-link:hover { color: var(--accent); border-color: var(--accent); }
+  .brand {
+    font-family: "Source Serif 4", serif;
+    font-size: 14px; font-weight: 600;
+    letter-spacing: -0.005em;
+    color: var(--text-soft);
+  }
+
+  /* === Header === */
+  header { text-align: center; margin-bottom: 24px; }
+  h1 {
+    font-family: "Source Serif 4", serif;
+    font-size: clamp(28px, 3.2vw, 40px);
+    font-weight: 500; letter-spacing: -0.02em;
+    color: var(--text);
+  }
+  h1 .accent { color: var(--accent); font-weight: 600; }
+  .sub {
+    font-family: "Source Serif 4", "LXGW WenKai", serif;
+    font-style: italic;
+    color: var(--text-soft);
+    font-size: 14px;
+    margin-top: 8px;
+  }
+
+  /* === 回合指示 === */
   .turn-bar {
-    display: flex; align-items: center; gap: 14px; margin: 10px 0 18px;
-    background: #1c1f2a; padding: 8px 18px; border-radius: 10px;
-    border: 1px solid #2a2e3c; font-size: .95em;
+    display: flex; align-items: center; gap: 20px;
+    background: var(--bg-soft);
+    padding: 10px 22px;
+    border-radius: 2px;
+    border: 1px solid var(--border);
+    margin-bottom: 32px;
   }
   .turn-chip {
-    padding: 4px 14px; border-radius: 20px; font-weight: 600; transition: all .25s;
-    border: 1px solid transparent; opacity: .45;
+    font-family: "JetBrains Mono", ui-monospace, monospace;
+    font-size: 11px; letter-spacing: 0.12em; text-transform: uppercase;
+    padding: 5px 16px;
+    border-radius: 2px;
+    border: 1px solid var(--border);
+    color: var(--text-faint);
+    opacity: .45;
+    transition: all .25s ease;
   }
-  .turn-chip.active { opacity: 1; transform: scale(1.06); }
-  #chip1.active { background: #3b5bdb33; border-color: #4c6ef5; color: #7aa2ff; }
-  #chip2.active { background: #e8590c33; border-color: #f76707; color: #ffa94d; }
-  .vs { color: #8a8f98; font-size: .8em; }
+  .turn-chip.active { opacity: 1; }
+  #chip1.active {
+    background: var(--p1-bg); border-color: var(--p1-color); color: var(--p1-color);
+    font-weight: 600;
+  }
+  #chip2.active {
+    background: var(--p2-bg); border-color: var(--p2-color); color: var(--p2-color);
+    font-weight: 600;
+  }
+  .vs {
+    font-family: "JetBrains Mono", ui-monospace, monospace;
+    font-size: 10px; letter-spacing: 0.15em; text-transform: uppercase;
+    color: var(--text-faint);
+  }
 
-  .boards { display: flex; gap: 28px; flex-wrap: wrap; justify-content: center; }
+  /* === 双棋盘 === */
+  .boards {
+    display: flex; gap: 36px; flex-wrap: wrap; justify-content: center;
+    margin-bottom: 24px;
+  }
   .board-wrap { position: relative; }
   .board-head {
     display: flex; justify-content: space-between; align-items: baseline;
-    padding: 0 4px 8px;
+    padding: 0 2px 10px;
   }
-  .board-title { font-weight: 700; font-size: 1.05em; }
-  #t1 { color: #7aa2ff; } #t2 { color: #ffa94d; }
-  .score { font-size: .9em; color: #b0b6c0; }
-  .score b { color: #fff; font-size: 1.1em; }
+  .board-title {
+    font-family: "Source Serif 4", serif;
+    font-weight: 600; font-size: 16px;
+    letter-spacing: -0.01em;
+  }
+  #t1 { color: var(--p1-color); }
+  #t2 { color: var(--p2-color); }
+  .score {
+    font-family: "JetBrains Mono", ui-monospace, monospace;
+    font-size: 11px; letter-spacing: 0.08em; text-transform: uppercase;
+    color: var(--text-faint);
+  }
+  .score b {
+    font-family: "Source Serif 4", serif;
+    font-size: 18px; color: var(--text);
+    font-weight: 600; letter-spacing: -0.01em;
+    margin-left: 4px;
+    text-transform: none;
+  }
+
   .board {
-    display: grid; grid-template-columns: repeat(4, 84px); gap: 10px;
-    background: #1c1f2a; padding: 10px; border-radius: 12px;
-    border: 2px solid #2a2e3c; transition: border-color .25s;
+    display: grid;
+    grid-template-columns: repeat(4, 80px);
+    gap: 8px;
+    background: var(--bg-soft);
+    padding: 8px;
+    border-radius: 2px;
+    border: 1px solid var(--border);
+    transition: border-color .25s;
   }
-  .board.active-p1 { border-color: #4c6ef5; }
-  .board.active-p2 { border-color: #f76707; }
-  .board.dim { opacity: .55; }
+  .board.active-p1 { border-color: var(--p1-color); }
+  .board.active-p2 { border-color: var(--p2-color); }
+  .board.dim { opacity: .5; }
+
   .cell {
-    width: 84px; height: 84px; border-radius: 8px;
-    background: #262a38; display: flex; align-items: center; justify-content: center;
-    font-weight: 800; font-size: 1.5em;
+    width: 80px; height: 80px;
+    border-radius: 2px;
+    background: var(--border-soft);
+    display: flex; align-items: center; justify-content: center;
+    font-family: "Source Serif 4", serif;
+    font-weight: 600;
+    font-size: 24px;
+    letter-spacing: -0.01em;
+    transition: transform .1s ease;
   }
-  .cell.pop { animation: pop .18s ease-out; }
+  .cell.pop { animation: pop .16s ease-out; }
   .cell.appear { animation: appear .2s ease-out; }
-  @keyframes pop   { 0% { transform: scale(1);} 50% { transform: scale(1.18);} 100% { transform: scale(1);} }
-  @keyframes appear{ 0% { transform: scale(.3); opacity: 0;} 100% { transform: scale(1); opacity: 1;} }
-  .shake { animation: shake .25s; }
-  @keyframes shake { 0%,100%{transform:translateX(0)} 25%{transform:translateX(-5px)} 75%{transform:translateX(5px)} }
+  @keyframes pop    { 0%{transform:scale(1)} 50%{transform:scale(1.14)} 100%{transform:scale(1)} }
+  @keyframes appear { 0%{transform:scale(.3);opacity:0} 100%{transform:scale(1);opacity:1} }
+  .shake { animation: shake .2s; }
+  @keyframes shake { 0%,100%{transform:translateX(0)} 25%{transform:translateX(-4px)} 75%{transform:translateX(4px)} }
 
-  .v2    { background:#eee4da; color:#776e65; }
-  .v4    { background:#ede0c8; color:#776e65; }
-  .v8    { background:#f2b179; color:#fff; }
-  .v16   { background:#f59563; color:#fff; }
-  .v32   { background:#f67c5f; color:#fff; }
-  .v64   { background:#f65e3b; color:#fff; }
-  .v128  { background:#edcf72; color:#fff; font-size:1.35em; }
-  .v256  { background:#edcc61; color:#fff; font-size:1.35em; }
-  .v512  { background:#edc850; color:#fff; font-size:1.35em; }
-  .v1024 { background:#edc53f; color:#fff; font-size:1.1em; }
-  .v2048 { background:#edc22e; color:#fff; font-size:1.1em; box-shadow:0 0 18px #edc22e88; }
-  .vbig  { background:#3c3a32; color:#fff; }
+  /* 方块配色：低饱和暖米 / 墨绿 / 金 */
+  .v2    { background: #eee4d6; color: #6b6358; }
+  .v4    { background: #e6dcc8; color: #6b6358; }
+  .v8    { background: #d4c4a0; color: #3d382f; }
+  .v16   { background: #c9b583; color: #3d382f; }
+  .v32   { background: #b8a262; color: #fff; }
+  .v64   { background: #a68d4a; color: #fff; }
+  .v128  { background: #8a9b7a; color: #fff; font-size: 20px; }
+  .v256  { background: #6e8665; color: #fff; font-size: 20px; }
+  .v512  { background: #576d53; color: #fff; font-size: 20px; }
+  .v1024 { background: #3f523d; color: #fff; font-size: 17px; }
+  .v2048 { background: var(--accent); color: #fff; font-size: 17px; }
+  .vbig  { background: var(--accent); color: #fff; }
 
+  /* === 键盘提示 === */
   .keys {
-    display: flex; gap: 40px; margin-top: 20px; font-size: .85em; color: #8a8f98;
+    display: flex; gap: 48px; margin-top: 16px;
+    font-family: "JetBrains Mono", ui-monospace, monospace;
+    font-size: 11px; letter-spacing: 0.06em; text-transform: uppercase;
+    color: var(--text-faint);
   }
   .keys kbd {
-    background: #262a38; padding: 2px 8px; border-radius: 5px;
-    border: 1px solid #3a3f52; margin: 0 1px; font-family: inherit;
+    background: transparent;
+    border: 1px solid var(--border);
+    padding: 2px 8px; border-radius: 2px;
+    margin: 0 2px;
+    font-family: inherit;
+    font-size: 10px;
+    color: var(--text-soft);
   }
-  .keys .k1 kbd { border-color: #4c6ef5; } .keys .k2 kbd { border-color: #f76707; }
+  .keys .k1 kbd { border-color: var(--p1-color); color: var(--p1-color); }
+  .keys .k2 kbd { border-color: var(--p2-color); color: var(--p2-color); }
 
-  .overlay {
-    position: absolute; inset: 0; border-radius: 12px;
-    background: rgba(18,20,28,.82); backdrop-filter: blur(3px);
-    display: flex; flex-direction: column; align-items: center; justify-content: center;
-    gap: 14px; opacity: 0; pointer-events: none; transition: opacity .3s; z-index: 5;
-  }
-  .overlay.show { opacity: 1; pointer-events: auto; }
-  .overlay .big { font-size: 1.5em; font-weight: 800; }
-  .overlay.win1 .big { color: #7aa2ff; } .overlay.win2 .big { color: #ffa94d; }
-  .overlay .desc { color: #b0b6c0; font-size: .9em; }
-  .overlay button {
-    background: #f76707; color: #fff; border: none; padding: 8px 26px;
-    border-radius: 8px; font-size: 1em; cursor: pointer; font-weight: 600;
-  }
-  .overlay button:hover { filter: brightness(1.1); }
+  /* === 结束弹层 === */
   #globalOverlay {
-    position: fixed; inset: 0; display: flex; align-items: center; justify-content: center;
-    background: rgba(10,11,16,.7); z-index: 50; opacity: 0; pointer-events: none; transition: opacity .3s;
+    position: fixed; inset: 0;
+    display: flex; align-items: center; justify-content: center;
+    background: rgba(250, 248, 243, .92);
+    backdrop-filter: blur(6px);
+    z-index: 50; opacity: 0; pointer-events: none; transition: opacity .3s;
   }
   #globalOverlay.show { opacity: 1; pointer-events: auto; }
   #globalOverlay .card {
-    background: #1c1f2a; border: 1px solid #3a3f52; border-radius: 16px;
-    padding: 36px 48px; text-align: center;
+    background: var(--bg);
+    border: 1px solid var(--border);
+    border-radius: 2px;
+    padding: 40px 56px;
+    text-align: center;
+  }
+  #globalOverlay .big {
+    font-family: "Source Serif 4", serif;
+    font-size: 28px; font-weight: 500;
+    letter-spacing: -0.02em;
+    margin-bottom: 10px;
+    color: var(--accent);
+  }
+  #globalOverlay .desc {
+    font-family: "Source Serif 4", "LXGW WenKai", serif;
+    font-style: italic;
+    color: var(--text-soft); font-size: 14px;
+    margin-bottom: 24px;
+  }
+  #globalOverlay button {
+    font-family: "JetBrains Mono", ui-monospace, monospace;
+    font-size: 11px; letter-spacing: 0.12em; text-transform: uppercase;
+    background: var(--text);
+    color: var(--bg);
+    border: none; padding: 10px 28px;
+    border-radius: 2px; font-weight: 500;
+    cursor: pointer;
+    transition: background .2s;
+  }
+  #globalOverlay button:hover { background: var(--accent); }
+
+  /* === 响应式 === */
+  @media (max-width: 900px) {
+    body { padding: 24px 16px 36px; }
+    .boards { gap: 24px; }
+    .board { grid-template-columns: repeat(4, 68px); }
+    .cell { width: 68px; height: 68px; font-size: 20px; }
+    .v128, .v256, .v512 { font-size: 17px; }
+    .v1024, .v2048 { font-size: 14px; }
+    .keys { gap: 24px; }
+  }
+  @media (max-width: 560px) {
+    .board { grid-template-columns: repeat(4, 58px); gap: 6px; padding: 6px; }
+    .cell { width: 58px; height: 58px; font-size: 18px; }
+    .v128, .v256, .v512 { font-size: 15px; }
+    .v1024, .v2048 { font-size: 12px; }
+    .boards { gap: 20px; }
+    .turn-bar { padding: 8px 16px; gap: 14px; }
   }
 </style>
 </head>
 <body>
-<a class="back-link" href="../" aria-label="返回作品集">← 返回作品集</a>
+
+<div class="top-row">
+  <a class="back-link" href="../">← 返回作品集</a>
+  <div class="brand">Mou Shengxi</div>
+</div>
+
 <header>
   <h1>2048 <span class="accent">对战版</span></h1>
-  <div class="sub">双人轮流制 · 先合成 2048 或逼对手死局者胜</div>
+  <div class="sub">双人轮流制 · 先合成 2048，或把对手逼入死局者胜</div>
 </header>
 
 <div class="turn-bar">
-  <span id="chip1" class="turn-chip">🎮 玩家 1</span>
-  <span class="vs">VS</span>
-  <span id="chip2" class="turn-chip">🎮 玩家 2</span>
+  <span id="chip1" class="turn-chip">玩家 1</span>
+  <span class="vs">vs</span>
+  <span id="chip2" class="turn-chip">玩家 2</span>
 </div>
 
 <div class="boards">
@@ -148,22 +312,18 @@
 </div>
 
 <div class="keys">
-  <span class="k1">玩家 1：<kbd>↑</kbd><kbd>↓</kbd><kbd>←</kbd><kbd>→</kbd></span>
-  <span class="k2">玩家 2：<kbd>W</kbd><kbd>A</kbd><kbd>S</kbd><kbd>D</kbd></span>
+  <span class="k1">玩家一 · 方向键 <kbd>↑</kbd><kbd>↓</kbd><kbd>←</kbd><kbd>→</kbd></span>
+  <span class="k2">玩家二 · WASD <kbd>W</kbd><kbd>A</kbd><kbd>S</kbd><kbd>D</kbd></span>
 </div>
 
 <div id="globalOverlay"><div class="card">
-  <div class="big" id="finalMsg" style="font-size:1.6em;font-weight:800;margin-bottom:8px;"></div>
-  <div style="color:#b0b6c0;font-size:.9em;margin-bottom:20px;" id="finalDesc"></div>
+  <div class="big" id="finalMsg"></div>
+  <div class="desc" id="finalDesc"></div>
   <button onclick="reset()">再来一局</button>
 </div></div>
 
 <script>
 "use strict";
-/* =========================================================
- * 状态模型
- * player = { grid: number[4][4], score: int, dead: bool }
- * ========================================================= */
 const SIZE = 4, WIN = 2048;
 let players, current, gameOver;
 
@@ -183,7 +343,6 @@ function spawn(grid){
   return [r,c];
 }
 
-/* 核心：一行向左滑动 + 合并（同值每行只合并一次） */
 function slideRowLeft(row){
   const tiles = row.filter(v => v !== 0);
   const out = []; let gained = 0; let mergedAt = -1;
@@ -191,14 +350,13 @@ function slideRowLeft(row){
     if (i+1 < tiles.length && tiles[i] === tiles[i+1]){
       const v = tiles[i]*2;
       out.push(v); gained += v; mergedAt = out.length-1;
-      i++; // 跳过被合并的块 —— 保证一次合并
+      i++;
     } else out.push(tiles[i]);
   }
   while (out.length < SIZE) out.push(0);
   return { row: out, gained, mergedAt };
 }
 
-/* 对 grid 施加方向，返回 {grid, gained, changed, mergedCells, new2048} */
 function move(grid, dir){
   let gained = 0, changed = false, new2048 = false;
   const mergedCells = [];
@@ -236,9 +394,6 @@ function canMove(grid){
   return false;
 }
 
-/* =========================================================
- * 渲染
- * ========================================================= */
 const boardEls = {1: document.getElementById("board1"), 2: document.getElementById("board2")};
 const scoreEls = {1: document.getElementById("score1"), 2: document.getElementById("score2")};
 
@@ -274,16 +429,12 @@ function renderTurn(){
   boardEls[2].className = "board" + (!gameOver && current===2 ? " active-p2" : " dim");
 }
 
-/* =========================================================
- * 游戏流程
- * ========================================================= */
 function handleMove(playerId, dir){
   if (gameOver || playerId !== current) return;
   const p = players[playerId];
   const result = move(p.grid, dir);
 
   if (!result.changed){
-    // 无效移动：不轮换、不生成新块，给抖动反馈
     const b = boardEls[playerId];
     b.classList.remove("shake"); void b.offsetWidth; b.classList.add("shake");
     return;
@@ -294,11 +445,8 @@ function handleMove(playerId, dir){
   const spawnCell = spawn(p.grid);
   render(playerId, result.mergedCells, spawnCell);
 
-  // 胜利判定 1：合成 2048
-  if (result.new2048) return endGame(playerId, "合成 "+WIN+"！");
-  // 胜利判定 2：对手死局
+  if (result.new2048) return endGame(playerId, "合成 "+WIN+"");
   if (!canMove(players[3-playerId].grid)) return endGame(playerId, "对手棋盘死局");
-  // 胜利判定 3：自己死局（对手胜）
   if (!canMove(p.grid)) return endGame(3-playerId, "你的棋盘死局");
 
   current = 3 - current;
@@ -309,8 +457,8 @@ function endGame(winnerId, reason){
   gameOver = true;
   renderTurn();
   const ov = document.getElementById("globalOverlay");
-  document.getElementById("finalMsg").textContent = "🏆 玩家 " + winnerId + " 获胜！";
-  document.getElementById("finalDesc").textContent = reason + " ·  P" + winnerId + " 得分 " + players[winnerId].score + " : " + players[3-winnerId].score;
+  document.getElementById("finalMsg").textContent = "玩家 "+winnerId+" 获胜";
+  document.getElementById("finalDesc").textContent = reason + " ·  玩家 "+winnerId+" 得分 "+players[winnerId].score+" : "+players[3-winnerId].score;
   ov.classList.add("show");
 }
 
