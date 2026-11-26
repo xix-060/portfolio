@@ -1,0 +1,6 @@
+# Local plugin packaging artifacts (not part of the portfolio site).
+.trae-html-share-packages/
+
+# Trae-generated standalone HTML wrappers for docs — we serve the Markdown
+# directly via GitHub Pages, and these extra bundles should not be committed.
+docs/*/
